@@ -69,7 +69,7 @@ A modern Next.js dashboard to visualize your Stryd running activities from a SQL
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/gitjpk/strydash.git
 cd strydash
 ```
 
@@ -78,13 +78,18 @@ cd strydash
 pnpm install
 ```
 
-3. **Setup Ollama (optional, for AI features)**
+3. **Generate the database**
+   - The SQLite database is not included in the repository
+   - Use [strydcmd](https://github.com/gitjpk/strydcmd) to generate it from your Stryd data
+   - Move the generated database file to the project root:
+   ```bash
+   cp /path/to/stryd_activities.db ./stryd_activities.db
+   ```
+
+4. **Setup Ollama (optional, for AI features)**
    - Install [Ollama](https://ollama.ai/)
    - Pull the Mistral model: `ollama pull mistral`
    - Ensure Ollama is running: `ollama serve`
-
-4. **Ensure the database file is present**
-   - Place your `stryd_activities.db` file in the project root
 
 5. **Start the development server**
 ```bash
@@ -236,4 +241,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-**Note**: This project requires a Stryd activities database (`stryd_activities.db`). The database structure should match the schema described above.
+**Note**: This project requires a Stryd activities database (`stryd_activities.db`). The database is not included in the repository. Generate it using [strydcmd](https://github.com/gitjpk/strydcmd) and place it in the project root directory.

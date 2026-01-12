@@ -69,7 +69,7 @@ Un tableau de bord Next.js moderne pour visualiser vos activités de course Stry
 
 1. **Cloner le dépôt**
 ```bash
-git clone <repository-url>
+git clone https://github.com/gitjpk/strydash.git
 cd strydash
 ```
 
@@ -78,13 +78,18 @@ cd strydash
 pnpm install
 ```
 
-3. **Configurer Ollama (optionnel, pour les fonctionnalités IA)**
+3. **Générer la base de données**
+   - La base de données SQLite n'est pas incluse dans le dépôt
+   - Utilisez [strydcmd](https://github.com/gitjpk/strydcmd) pour la générer à partir de vos données Stryd
+   - Déplacez le fichier de base de données généré à la racine du projet :
+   ```bash
+   cp /chemin/vers/stryd_activities.db ./stryd_activities.db
+   ```
+
+4. **Configurer Ollama (optionnel, pour les fonctionnalités IA)**
    - Installez [Ollama](https://ollama.ai/)
    - Téléchargez le modèle Mistral : `ollama pull mistral`
    - Assurez-vous qu'Ollama est en cours d'exécution : `ollama serve`
-
-4. **S'assurer que le fichier de base de données est présent**
-   - Placez votre fichier `stryd_activities.db` à la racine du projet
 
 5. **Démarrer le serveur de développement**
 ```bash
@@ -236,4 +241,4 @@ Les contributions sont les bienvenues ! N'hésitez pas à soumettre une Pull Req
 
 ---
 
-**Note** : Ce projet nécessite une base de données d'activités Stryd (`stryd_activities.db`). La structure de la base de données doit correspondre au schéma décrit ci-dessus.
+**Note** : Ce projet nécessite une base de données d'activités Stryd (`stryd_activities.db`). La base de données n'est pas incluse dans le dépôt. Générez-la en utilisant [strydcmd](https://github.com/gitjpk/strydcmd) et placez-la dans le répertoire racine du projet.
