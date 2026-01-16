@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Globe, Monitor, Map, Brain, Download, CheckCircle, Server } from 'lucide-react';
-import { getPreferences, savePreferences, type Language, type Theme, type MapProvider, type AIModel, type AIInstanceType } from '@/lib/preferences';
+import { getPreferences, savePreferences, type Language, type Theme, type MapProvider, type AIModel, type AIInstanceType, type RemoteServerType } from '@/lib/preferences';
 import { usePreferences } from '@/components/PreferencesProvider';
 
 export default function SettingsPage() {
@@ -13,6 +13,7 @@ export default function SettingsPage() {
   const [aiModel, setAIModel] = useState<AIModel>('mistral');
   const [aiInstanceType, setAIInstanceType] = useState<AIInstanceType>('local');
   const [aiRemoteUrl, setAIRemoteUrl] = useState<string>('');
+  const [remoteServerType, setRemoteServerType] = useState<RemoteServerType>('ollama');
   const [downloadedModels, setDownloadedModels] = useState<Set<AIModel>>(new Set());
   const [downloadingModel, setDownloadingModel] = useState<AIModel | null>(null);
   const [saved, setSaved] = useState(false);
@@ -26,6 +27,7 @@ export default function SettingsPage() {
     setAIModel(prefs.aiModel || 'mistral');
     setAIInstanceType(prefs.aiInstanceType || 'local');
     setAIRemoteUrl(prefs.aiRemoteUrl || '');
+    setRemoteServerType(prefs.remoteServerType || 'ollama');
     
     // Apply theme
     if (prefs.theme === 'dark') {
@@ -55,7 +57,7 @@ export default function SettingsPage() {
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
-    savePreferences({ language: newLanguage, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
+    savePreferences({ language: newLanguage, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined, remoteServerType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
     // Reload to apply language changes
@@ -64,7 +66,7 @@ export default function SettingsPage() {
 
   const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);
-    savePreferences({ language, theme: newTheme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
+    savePreferences({ language, theme: newTheme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined, remoteServerType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
     
@@ -78,21 +80,28 @@ export default function SettingsPage() {
 
   const handleMapProviderChange = (newMapProvider: MapProvider) => {
     setMapProvider(newMapProvider);
-    savePreferences({ language, theme, mapProvider: newMapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
+    savePreferences({ language, theme, mapProvider: newMapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined, remoteServerType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
   const handleAIInstanceTypeChange = (newType: AIInstanceType) => {
     setAIInstanceType(newType);
-    savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType: newType, aiRemoteUrl: aiRemoteUrl || undefined });
+    savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType: newType, aiRemoteUrl: aiRemoteUrl || undefined, remoteServerType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
   const handleRemoteUrlChange = (newUrl: string) => {
     setAIRemoteUrl(newUrl);
-    savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: newUrl || undefined });
+    savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: newUrl || undefined, remoteServerType });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleRemoteServerTypeChange = (newType: RemoteServerType) => {
+    setRemoteServerType(newType);
+    savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined, remoteServerType: newType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -135,7 +144,7 @@ export default function SettingsPage() {
     }
     
     setAIModel(newAIModel);
-    savePreferences({ language, theme, mapProvider, aiModel: newAIModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
+    savePreferences({ language, theme, mapProvider, aiModel: newAIModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined, remoteServerType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -416,6 +425,36 @@ export default function SettingsPage() {
             {/* Remote Instance - URL Input */}
             {aiInstanceType === 'remote' && (
               <div className="space-y-3">
+                {/* Server Type Selection */}
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
+                    {t('settings.serverType')}
+                  </label>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => handleRemoteServerTypeChange('ollama')}
+                      className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all ${
+                        remoteServerType === 'ollama'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium'
+                          : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
+                      }`}
+                    >
+                      🦙 Ollama
+                    </button>
+                    <button
+                      onClick={() => handleRemoteServerTypeChange('lmstudio')}
+                      className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all ${
+                        remoteServerType === 'lmstudio'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium'
+                          : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
+                      }`}
+                    >
+                      🎨 LM Studio
+                    </button>
+                  </div>
+                </div>
+
+                {/* URL Input */}
                 <div>
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
                     {t('settings.remoteServerUrl')}

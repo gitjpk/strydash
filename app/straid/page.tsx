@@ -66,6 +66,7 @@ export default function StrAIdPage() {
           })),
           model: currentModel,
           remoteUrl: prefs.aiInstanceType === 'remote' ? prefs.aiRemoteUrl : undefined,
+          remoteServerType: prefs.aiInstanceType === 'remote' ? prefs.remoteServerType : undefined,
         }),
       });
 

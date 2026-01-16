@@ -107,7 +107,7 @@ function formatDuration(seconds: number): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, model, remoteUrl } = await request.json();
+    const { messages, model, remoteUrl, remoteServerType } = await request.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -130,29 +130,46 @@ export async function POST(request: NextRequest) {
       ...messages
     ];
 
-    // Call Ollama API
-    const response = await fetch(`${apiUrl}/api/chat`, {
+    // Determine endpoint and request format based on server type
+    const isLMStudio = remoteUrl && remoteServerType === 'lmstudio';
+    const endpoint = isLMStudio ? '/v1/chat/completions' : '/api/chat';
+    const requestBody = isLMStudio 
+      ? {
+          model: model, // LM Studio uses the display name, not the tag
+          messages: messagesWithContext,
+          temperature: 0.7,
+          max_tokens: -1,
+          stream: false,
+        }
+      : {
+          model: ollamaModel,
+          messages: messagesWithContext,
+          stream: false,
+        };
+
+    // Call AI API
+    const response = await fetch(`${apiUrl}${endpoint}`, {
+    // Call AI API
+    const response = await fetch(`${apiUrl}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: ollamaModel,
-        messages: messagesWithContext,
-        stream: false,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Ollama API error:', errorText);
+      console.error('AI API error:', errorText);
       
       // Check if it's a model not found error
       if (response.status === 404 || errorText.includes('not found')) {
         return NextResponse.json(
           { 
-            error: 'Model not found. Please pull the model first using: ollama pull ' + ollamaModel,
-            needsPull: true,
+            error: isLMStudio 
+              ? 'Model not found. Please make sure the model is loaded in LM Studio.'
+              : 'Model not found. Please pull the model first using: ollama pull ' + ollamaModel,
+            needsPull: !isLMStudio,
             model: ollamaModel
           },
           { status: 404 }
@@ -160,26 +177,35 @@ export async function POST(request: NextRequest) {
       }
       
       return NextResponse.json(
-        { error: 'Failed to get response from Ollama: ' + errorText },
+        { error: 'Failed to get response from AI server: ' + errorText },
         { status: response.status }
       );
     }
 
     const data = await response.json();
-    // Ollama returns { message: { role, content } }, we need just the content
-    const messageContent = typeof data.message === 'string' 
-      ? data.message 
-      : data.message?.content || 'No response';
+    
+    // Parse response based on server type
+    let messageContent: string;
+    if (isLMStudio) {
+      // LM Studio returns OpenAI format: { choices: [{ message: { content: "..." } }] }
+      messageContent = data.choices?.[0]?.message?.content || 'No response';
+    } else {
+      // Ollama returns: { message: { role, content } }
+      messageContent = typeof data.message === 'string' 
+        ? data.message 
+        : data.message?.content || 'No response';
+    }
+    
     return NextResponse.json({ message: messageContent });
   } catch (error: any) {
     console.error('Chat API error:', error);
     
-    // Check if Ollama is not running
+    // Check if server is not reachable
     if (error.cause?.code === 'ECONNREFUSED') {
       return NextResponse.json(
         { 
-          error: 'Cannot connect to Ollama. Please make sure Ollama is running (ollama serve)',
-          ollamaNotRunning: true
+          error: 'Cannot connect to AI server. Please make sure the server is running.',
+          serverNotRunning: true
         },
         { status: 503 }
       );

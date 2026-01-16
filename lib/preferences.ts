@@ -3,6 +3,7 @@ export type Theme = 'light' | 'dark';
 export type MapProvider = 'leaflet' | 'maplibre';
 export type AIModel = 'mistral' | 'llama3.1' | 'phi3' | 'gemma2' | 'qwen2.5';
 export type AIInstanceType = 'local' | 'remote';
+export type RemoteServerType = 'ollama' | 'lmstudio';
 
 export interface Preferences {
   language: Language;
@@ -11,6 +12,7 @@ export interface Preferences {
   aiModel: AIModel;
   aiInstanceType: AIInstanceType;
   aiRemoteUrl?: string;
+  remoteServerType?: RemoteServerType;
 }
 
 export const defaultPreferences: Preferences = {
@@ -20,6 +22,7 @@ export const defaultPreferences: Preferences = {
   aiModel: 'mistral',
   aiInstanceType: 'local',
   aiRemoteUrl: undefined,
+  remoteServerType: 'ollama',
 };
 
 // Client-side only functions

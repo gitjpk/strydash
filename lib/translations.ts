@@ -98,9 +98,10 @@ export const translations = {
       aiSettingsDesc: 'Configure your AI assistant connection',
       localInstance: 'Local Instance',
       remoteInstance: 'Remote Instance',
+      serverType: 'Server Type',
       remoteServerUrl: 'Remote Server URL',
       remoteUrlPlaceholder: '192.168.1.1:1234',
-      remoteUrlDesc: 'Enter the address and port of your remote Ollama instance (e.g., 192.168.1.1:1234)',
+      remoteUrlDesc: 'Enter the address and port of your remote server (e.g., 192.168.1.1:1234)',
       saveSettings: 'Settings saved successfully!',
     },
     units: {
@@ -229,9 +230,10 @@ export const translations = {
       aiSettingsDesc: 'Configurez la connexion de votre assistant IA',
       localInstance: 'Instance locale',
       remoteInstance: 'Instance distante',
+      serverType: 'Type de serveur',
       remoteServerUrl: 'URL du serveur distant',
       remoteUrlPlaceholder: '192.168.1.1:1234',
-      remoteUrlDesc: 'Entrez l\'adresse et le port de votre instance Ollama distante (ex: 192.168.1.1:1234)',
+      remoteUrlDesc: 'Entrez l\'adresse et le port de votre serveur distant (ex: 192.168.1.1:1234)',
       saveSettings: 'Paramètres enregistrés avec succès !',
     },
     units: {
