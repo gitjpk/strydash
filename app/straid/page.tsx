@@ -17,6 +17,8 @@ export default function StrAIdPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [currentModel, setCurrentModel] = useState<string>('mistral');
+  const [remoteModelName, setRemoteModelName] = useState<string | null>(null);
+  const [isRemoteInstance, setIsRemoteInstance] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -24,8 +26,17 @@ export default function StrAIdPage() {
     // Load the selected model from preferences
     const prefs = getPreferences();
     const model = prefs.aiModel || 'mistral';
+    const isRemote = prefs.aiInstanceType === 'remote';
     setCurrentModel(model);
-    console.log(`StrAId using model: ${model}`);
+    setIsRemoteInstance(isRemote);
+    
+    if (isRemote && prefs.remoteModelName) {
+      setRemoteModelName(prefs.remoteModelName);
+      console.log(`StrAId using remote model: ${prefs.remoteModelName}`);
+    } else {
+      console.log(`StrAId using model: ${model}`);
+    }
+    
     console.log(`StrAId instance type: ${prefs.aiInstanceType || 'local'}`);
     if (prefs.aiRemoteUrl) {
       console.log(`StrAId remote URL: ${prefs.aiRemoteUrl}`);
@@ -131,7 +142,17 @@ export default function StrAIdPage() {
             </h1>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 ml-13">
-            {modelLoaded ? `Using ${currentModel}` : t('straid.modelLoading')}
+            {modelLoaded ? (
+              isRemoteInstance && remoteModelName ? (
+                <span>
+                  Using <span className="font-mono bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded text-xs">{remoteModelName}</span>
+                </span>
+              ) : (
+                `Using ${currentModel}`
+              )
+            ) : (
+              t('straid.modelLoading')
+            )}
           </p>
         </div>
 

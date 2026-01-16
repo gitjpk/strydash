@@ -13,6 +13,7 @@ export interface Preferences {
   aiInstanceType: AIInstanceType;
   aiRemoteUrl?: string;
   remoteServerType?: RemoteServerType;
+  remoteModelName?: string;
 }
 
 export const defaultPreferences: Preferences = {

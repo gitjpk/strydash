@@ -92,11 +92,42 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const detectRemoteModel = async (url: string, serverType: RemoteServerType) => {
+    if (!url) return;
+    
+    try {
+      const response = await fetch('/api/remote-model', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ remoteUrl: url, remoteServerType: serverType }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.modelName) {
+          // Save the detected model name
+          const prefs = getPreferences();
+          savePreferences({ ...prefs, remoteModelName: data.modelName });
+          console.log('Detected remote model:', data.modelName);
+        }
+      }
+    } catch (error) {
+      console.error('Error detecting remote model:', error);
+    }
+  };
+
   const handleRemoteUrlChange = (newUrl: string) => {
     setAIRemoteUrl(newUrl);
     savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: newUrl || undefined, remoteServerType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    
+    // Detect remote model
+    if (newUrl && aiInstanceType === 'remote') {
+      detectRemoteModel(newUrl, remoteServerType);
+    }
   };
 
   const handleRemoteServerTypeChange = (newType: RemoteServerType) => {
@@ -104,6 +135,11 @@ export default function SettingsPage() {
     savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined, remoteServerType: newType });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    
+    // Detect remote model
+    if (aiRemoteUrl && aiInstanceType === 'remote') {
+      detectRemoteModel(aiRemoteUrl, newType);
+    }
   };
 
   const handleAIModelChange = async (newAIModel: AIModel) => {

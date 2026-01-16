@@ -149,8 +149,6 @@ export async function POST(request: NextRequest) {
 
     // Call AI API
     const response = await fetch(`${apiUrl}${endpoint}`, {
-    // Call AI API
-    const response = await fetch(`${apiUrl}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
