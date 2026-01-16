@@ -12,9 +12,8 @@ A modern Next.js dashboard to visualize your Stryd running activities from a SQL
 ### 🏃 Activity Management
 - **Activity List** - Browse all your activities with key statistics (distance, duration, pace, power, heart rate)
 - **Detailed View** - Complete activity breakdown with all metrics and statistics
-- **One-Click Filtering** - Click directly on activity types or tags to filter activities instantly
-- **Active Filters Bar** - Visual display of active filters with easy removal
-- **Date Range Filter** - Filter activities from a specific start date in Data Settings
+- **Filtering** - Multi-select filter by activity type (easy, tempo, interval, etc.)
+- **Tag-based Filtering** - Click on tags to filter activities
 - **Calendar View** - Weekly calendar showing activities with navigation for multiple activities per day
 
 ### 📊 Data Visualization
@@ -30,11 +29,9 @@ A modern Next.js dashboard to visualize your Stryd running activities from a SQL
 - **Training Analysis** - Get recommendations, analyze patterns, and understand your performance
 
 ### 📈 Trends & Analytics
-- **7-Day Rolling Stats** - Track cumulative distance and duration over 7-day periods
-- **10-Day Rolling Stats** - Extended view with 10-day cumulative metrics
-- **Performance Trends** - Visualize your progress over time with interactive charts
+- **Performance Trends** - Visualize your progress over time
+- **Statistics Dashboard** - Key metrics and performance indicators
 - **Historical Comparison** - Track improvements and identify patterns
-- **Date Filtering** - Apply date range filters to focus on specific training periods
 
 ### 🗺️ Maps
 - **Dual Map Providers** - Choose between OpenStreetMap (Leaflet) or MapLibre GL JS
@@ -47,10 +44,8 @@ A modern Next.js dashboard to visualize your Stryd running activities from a SQL
 
 ### 🎨 Customization
 - **Dark Mode** - Toggle between light and dark themes
-- **Collapsible Sidebar** - Minimize navigation for more content space
 - **Responsive Design** - Optimized for desktop and mobile devices
 - **Modern UI** - Clean, gradient-based design with smooth animations
-- **Data Settings** - Control which activities to display with date-based filtering
 
 ## 🛠️ Technologies
 
@@ -69,7 +64,7 @@ A modern Next.js dashboard to visualize your Stryd running activities from a SQL
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/gitjpk/strydash.git
+git clone <repository-url>
 cd strydash
 ```
 
@@ -78,18 +73,13 @@ cd strydash
 pnpm install
 ```
 
-3. **Generate the database**
-   - The SQLite database is not included in the repository
-   - Use [strydcmd](https://github.com/gitjpk/strydcmd) to generate it from your Stryd data
-   - Move the generated database file to the project root:
-   ```bash
-   cp /path/to/stryd_activities.db ./stryd_activities.db
-   ```
-
-4. **Setup Ollama (optional, for AI features)**
+3. **Setup Ollama (optional, for AI features)**
    - Install [Ollama](https://ollama.ai/)
    - Pull the Mistral model: `ollama pull mistral`
    - Ensure Ollama is running: `ollama serve`
+
+4. **Ensure the database file is present**
+   - Place your `stryd_activities.db` file in the project root
 
 5. **Start the development server**
 ```bash
@@ -165,9 +155,8 @@ strydash/
 
 ### Activity List
 - View all activities with key metrics
-- Click on **activity type badges** to filter by that type
+- Use the **Select Type** dropdown to filter by activity type (multiple selection)
 - Click on **tags** to add them to filters
-- Active filters are shown in a dedicated bar with easy removal
 - Click on any activity card to view details
 
 ### Activity Detail
@@ -184,13 +173,9 @@ strydash/
 - Navigate between multiple activities on the same day
 
 ### Settings
-- **Data Settings**
-  - Filter activities from a specific date
-  - Control which data is displayed across all pages
 - **Language** - Switch between English and French
 - **Theme** - Toggle between light and dark mode
 - **Map Provider** - Choose between Leaflet (OpenStreetMap) or MapLibre GL JS
-- **AI Model** - Select from multiple Ollama models (Mistral, Llama 3.1, Phi-3, Gemma 2, Qwen 2.5)
 
 ### StrAId (AI Assistant)
 - Ask questions about your training in natural language
@@ -199,11 +184,9 @@ strydash/
 - Requires Ollama with Mistral model installed and running
 
 ### Trends
-- View 7-day rolling cumulative distance and duration
-- View 10-day rolling cumulative distance and duration
-- Track training load progression over time
-- Interactive charts with hover details
-- Respects date filter from Data Settings
+- View performance trends over time
+- Analyze training load and progression
+- Track key metrics evolution
 
 ## 🚀 Build for Production
 
@@ -222,8 +205,6 @@ Preferences are stored in localStorage and include:
 - **Language** (`en` | `fr`)
 - **Theme** (`light` | `dark`)
 - **Map Provider** (`leaflet` | `maplibre`)
-- **AI Model** (multiple options available)
-- **Start Date** - Optional date filter for activities
 
 ### Environment
 The application uses Node.js with Corepack enabled. Ensure your PATH includes:
@@ -241,4 +222,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-**Note**: This project requires a Stryd activities database (`stryd_activities.db`). The database is not included in the repository. Generate it using [strydcmd](https://github.com/gitjpk/strydcmd) and place it in the project root directory.
+**Note**: This project requires a Stryd activities database (`stryd_activities.db`). The database structure should match the schema described above.

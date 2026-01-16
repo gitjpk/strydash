@@ -12,9 +12,8 @@ Un tableau de bord Next.js moderne pour visualiser vos activités de course Stry
 ### 🏃 Gestion des activités
 - **Liste d'activités** - Parcourez toutes vos activités avec les statistiques clés (distance, durée, allure, puissance, fréquence cardiaque)
 - **Vue détaillée** - Analyse complète de l'activité avec toutes les métriques et statistiques
-- **Filtrage en un clic** - Cliquez directement sur les types d'activité ou tags pour filtrer instantanément
-- **Barre de filtres actifs** - Affichage visuel des filtres actifs avec suppression facile
-- **Filtre par plage de dates** - Filtrez les activités à partir d'une date de début dans Paramètres des données
+- **Filtrage** - Filtre multi-sélection par type d'activité (easy, tempo, interval, etc.)
+- **Filtrage par tags** - Cliquez sur les tags pour filtrer les activités
 - **Vue calendrier** - Calendrier hebdomadaire affichant les activités avec navigation pour plusieurs activités par jour
 
 ### 📊 Visualisation des données
@@ -30,11 +29,9 @@ Un tableau de bord Next.js moderne pour visualiser vos activités de course Stry
 - **Analyse d'entraînement** - Obtenez des recommandations, analysez des modèles et comprenez vos performances
 
 ### 📈 Tendances & Analyses
-- **Statistiques cumulées sur 7 jours** - Suivez la distance et la durée cumulées sur des périodes de 7 jours
-- **Statistiques cumulées sur 10 jours** - Vue étendue avec métriques cumulées sur 10 jours
-- **Tendances de performance** - Visualisez votre progression au fil du temps avec graphiques interactifs
+- **Tendances de performance** - Visualisez votre progression au fil du temps
+- **Tableau de bord statistiques** - Métriques clés et indicateurs de performance
 - **Comparaison historique** - Suivez les améliorations et identifiez les modèles
-- **Filtrage par date** - Appliquez des filtres de plage de dates pour vous concentrer sur des périodes d'entraînement spécifiques
 
 ### 🗺️ Cartes
 - **Deux fournisseurs de cartes** - Choisissez entre OpenStreetMap (Leaflet) ou MapLibre GL JS
@@ -47,10 +44,8 @@ Un tableau de bord Next.js moderne pour visualiser vos activités de course Stry
 
 ### 🎨 Personnalisation
 - **Mode sombre** - Basculez entre les thèmes clair et sombre
-- **Barre latérale repliable** - Minimisez la navigation pour plus d'espace de contenu
 - **Design responsive** - Optimisé pour desktop et mobile
 - **Interface moderne** - Design épuré avec dégradés et animations fluides
-- **Paramètres des données** - Contrôlez quelles activités afficher avec filtrage par date
 
 ## 🛠️ Technologies
 
@@ -69,7 +64,7 @@ Un tableau de bord Next.js moderne pour visualiser vos activités de course Stry
 
 1. **Cloner le dépôt**
 ```bash
-git clone https://github.com/gitjpk/strydash.git
+git clone <repository-url>
 cd strydash
 ```
 
@@ -78,18 +73,13 @@ cd strydash
 pnpm install
 ```
 
-3. **Générer la base de données**
-   - La base de données SQLite n'est pas incluse dans le dépôt
-   - Utilisez [strydcmd](https://github.com/gitjpk/strydcmd) pour la générer à partir de vos données Stryd
-   - Déplacez le fichier de base de données généré à la racine du projet :
-   ```bash
-   cp /chemin/vers/stryd_activities.db ./stryd_activities.db
-   ```
-
-4. **Configurer Ollama (optionnel, pour les fonctionnalités IA)**
+3. **Configurer Ollama (optionnel, pour les fonctionnalités IA)**
    - Installez [Ollama](https://ollama.ai/)
    - Téléchargez le modèle Mistral : `ollama pull mistral`
    - Assurez-vous qu'Ollama est en cours d'exécution : `ollama serve`
+
+4. **S'assurer que le fichier de base de données est présent**
+   - Placez votre fichier `stryd_activities.db` à la racine du projet
 
 5. **Démarrer le serveur de développement**
 ```bash
@@ -165,9 +155,8 @@ strydash/
 
 ### Liste d'activités
 - Visualisez toutes les activités avec les métriques clés
-- Cliquez sur les **badges de type d'activité** pour filtrer par ce type
+- Utilisez le menu déroulant **Select Type** pour filtrer par type d'activité (sélection multiple)
 - Cliquez sur les **tags** pour les ajouter aux filtres
-- Les filtres actifs sont affichés dans une barre dédiée avec suppression facile
 - Cliquez sur n'importe quelle carte d'activité pour voir les détails
 
 ### Détail d'activité
@@ -184,13 +173,9 @@ strydash/
 - Navigation entre plusieurs activités le même jour
 
 ### Paramètres
-- **Paramètres des données**
-  - Filtrer les activités à partir d'une date spécifique
-  - Contrôler quelles données sont affichées sur toutes les pages
 - **Langue** - Basculez entre anglais et français
 - **Thème** - Basculez entre mode clair et mode sombre
 - **Fournisseur de carte** - Choisissez entre Leaflet (OpenStreetMap) ou MapLibre GL JS
-- **Modèle IA** - Sélectionnez parmi plusieurs modèles Ollama (Mistral, Llama 3.1, Phi-3, Gemma 2, Qwen 2.5)
 
 ### StrAId (Assistant IA)
 - Posez des questions sur votre entraînement en langage naturel
@@ -199,11 +184,9 @@ strydash/
 - Nécessite Ollama avec le modèle Mistral installé et en cours d'exécution
 
 ### Tendances
-- Visualisez la distance et la durée cumulées sur 7 jours glissants
-- Visualisez la distance et la durée cumulées sur 10 jours glissants
-- Suivez la progression de la charge d'entraînement au fil du temps
-- Graphiques interactifs avec détails au survol
-- Respecte le filtre de date des Paramètres des données
+- Visualisez les tendances de performance au fil du temps
+- Analysez la charge d'entraînement et la progression
+- Suivez l'évolution des métriques clés
 
 ## 🚀 Build pour la production
 
@@ -222,8 +205,6 @@ Les préférences sont stockées dans localStorage et incluent :
 - **Langue** (`en` | `fr`)
 - **Thème** (`light` | `dark`)
 - **Fournisseur de carte** (`leaflet` | `maplibre`)
-- **Modèle IA** (plusieurs options disponibles)
-- **Date de début** - Filtre de date optionnel pour les activités
 
 ### Environnement
 L'application utilise Node.js avec Corepack activé. Assurez-vous que votre PATH inclut :
@@ -241,4 +222,4 @@ Les contributions sont les bienvenues ! N'hésitez pas à soumettre une Pull Req
 
 ---
 
-**Note** : Ce projet nécessite une base de données d'activités Stryd (`stryd_activities.db`). La base de données n'est pas incluse dans le dépôt. Générez-la en utilisant [strydcmd](https://github.com/gitjpk/strydcmd) et placez-la dans le répertoire racine du projet.
+**Note** : Ce projet nécessite une base de données d'activités Stryd (`stryd_activities.db`). La structure de la base de données doit correspondre au schéma décrit ci-dessus.

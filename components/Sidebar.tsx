@@ -5,10 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Activity, Settings, ChevronLeft, ChevronRight, Calendar, LayoutDashboard, TrendingUp, Menu, X, MessageSquare } from 'lucide-react';
 import { usePreferences } from './PreferencesProvider';
-import { useSidebar } from './SidebarProvider';
 
 export default function Sidebar() {
-  const { isCollapsed, setIsCollapsed } = useSidebar();
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { t } = usePreferences();

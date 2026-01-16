@@ -19,8 +19,6 @@ export const translations = {
       comingSoon: 'Coming soon...',
       duration7d: '7-Day Rolling Duration (minutes)',
       distance7d: '7-Day Rolling Distance (km)',
-      duration10d: '10-Day Rolling Duration (minutes)',
-      distance10d: '10-Day Rolling Distance (km)',
     },
     straid: {
       title: 'StrAId - Your Running Assistant',
@@ -89,11 +87,6 @@ export const translations = {
     },
     settings: {
       title: 'Site Settings',
-      dataSettings: 'Data Settings',
-      siteSettings: 'Site Settings',
-      filterByDate: 'Filter activities from date',
-      filterByDateDesc: 'Only show activities after this date (leave empty to show all)',
-      clearDate: 'Clear date filter',
       language: 'Language',
       theme: 'Theme',
       lightMode: 'Light',
@@ -152,8 +145,6 @@ export const translations = {
       comingSoon: 'Contenu à venir...',
       duration7d: 'Durée cumulée sur 7 jours (minutes)',
       distance7d: 'Distance cumulée sur 7 jours (km)',
-      duration10d: 'Durée cumulée sur 10 jours (minutes)',
-      distance10d: 'Distance cumulée sur 10 jours (km)',
     },
     straid: {
       title: 'StrAId - Votre Assistant Course',
@@ -221,11 +212,8 @@ export const translations = {
       time: 'Temps',
     },
     settings: {
-      title: 'Paramètres du site',      dataSettings: 'Paramètres des données',
-      siteSettings: 'Paramètres du site',
-      filterByDate: 'Filtrer les activités à partir du',
-      filterByDateDesc: 'Afficher uniquement les activités après cette date (vide = toutes)',
-      clearDate: 'Effacer le filtre de date',      language: 'Langue',
+      title: 'Paramètres du site',
+      language: 'Langue',
       theme: 'Thème',
       lightMode: 'Clair',
       darkMode: 'Sombre',

@@ -94,7 +94,7 @@ export default function TrendsClient({ rollingStats }: TrendsClientProps) {
         </div>
 
         {/* Distance Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4 sm:p-6 lg:p-8 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4 sm:p-6 lg:p-8">
           <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100">
             {t('trends.distance7d')}
           </h2>
@@ -135,104 +135,6 @@ export default function TrendsClient({ rollingStats }: TrendsClientProps) {
                   stroke="#10B981"
                   strokeWidth={2}
                   dot={{ fill: '#10B981', r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Duration 10d Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4 sm:p-6 lg:p-8 mb-6">
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100">
-            {t('trends.duration10d')}
-          </h2>
-          <div className="w-full" style={{ height: 'clamp(280px, 45vw, 400px)' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" className="dark:stroke-gray-700" />
-                <XAxis
-                  dataKey="dateFormatted"
-                  stroke="#9CA3AF"
-                  style={{ fontSize: '12px' }}
-                />
-                <YAxis
-                  stroke="#9CA3AF"
-                  style={{ fontSize: '12px' }}
-                  label={{
-                    value: t('units.minutes'),
-                    angle: -90,
-                    position: 'insideLeft',
-                    style: { fill: '#9CA3AF' },
-                  }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1F2937',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
-                  }}
-                  formatter={(value: number) => [
-                    `${value.toFixed(0)} ${t('units.minutes')}`,
-                    t('trends.duration10d'),
-                  ]}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="duration_10d"
-                  stroke="#8B5CF6"
-                  strokeWidth={2}
-                  dot={{ fill: '#8B5CF6', r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Distance 10d Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4 sm:p-6 lg:p-8">
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100">
-            {t('trends.distance10d')}
-          </h2>
-          <div className="w-full" style={{ height: 'clamp(280px, 45vw, 400px)' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" className="dark:stroke-gray-700" />
-                <XAxis
-                  dataKey="dateFormatted"
-                  stroke="#9CA3AF"
-                  style={{ fontSize: '12px' }}
-                />
-                <YAxis
-                  stroke="#9CA3AF"
-                  style={{ fontSize: '12px' }}
-                  label={{
-                    value: t('units.km'),
-                    angle: -90,
-                    position: 'insideLeft',
-                    style: { fill: '#9CA3AF' },
-                  }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1F2937',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
-                  }}
-                  formatter={(value: number) => [
-                    `${value.toFixed(1)} ${t('units.km')}`,
-                    t('trends.distance10d'),
-                  ]}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="distance_10d"
-                  stroke="#F59E0B"
-                  strokeWidth={2}
-                  dot={{ fill: '#F59E0B', r: 4 }}
                   activeDot={{ r: 6 }}
                 />
               </LineChart>

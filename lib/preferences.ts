@@ -8,7 +8,6 @@ export interface Preferences {
   theme: Theme;
   mapProvider: MapProvider;
   aiModel: AIModel;
-  startDate?: string;
 }
 
 export const defaultPreferences: Preferences = {
@@ -16,7 +15,6 @@ export const defaultPreferences: Preferences = {
   theme: 'light',
   mapProvider: 'leaflet',
   aiModel: 'mistral',
-  startDate: undefined,
 };
 
 // Client-side only functions

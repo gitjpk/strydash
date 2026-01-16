@@ -54,31 +54,21 @@ export interface RollingStats {
   date: string;
   distance_7d: number;
   duration_7d: number;
-  distance_10d: number;
-  duration_10d: number;
 }
 
 // Get rolling 7-day cumulative stats
-export function getRolling7DayStats(startDate?: string): RollingStats[] {
-  let query = `
+export function getRolling7DayStats(): RollingStats[] {
+  const query = `
     WITH daily_stats AS (
       SELECT 
         DATE(date) as day,
         SUM(distance) / 1000.0 as daily_distance_km,
         SUM(moving_time) / 60.0 as daily_duration_min
       FROM activities
-      WHERE date IS NOT NULL`;
-  
-  if (startDate) {
-    query += ` AND date >= '${startDate}'`;
-  }
-  
-  query += `
+      WHERE date IS NOT NULL
       GROUP BY DATE(date)
       ORDER BY DATE(date)
-    ),`;
-  
-  query += `
+    ),
     rolling AS (
       SELECT 
         day,
@@ -95,27 +85,13 @@ export function getRolling7DayStats(startDate?: string): RollingStats[] {
           FROM daily_stats ds2
           WHERE ds2.day <= ds1.day
             AND ds2.day >= DATE(ds1.day, '-6 days')
-        ) as duration_7d,
-        (
-          SELECT SUM(ds2.daily_distance_km)
-          FROM daily_stats ds2
-          WHERE ds2.day <= ds1.day
-            AND ds2.day >= DATE(ds1.day, '-9 days')
-        ) as distance_10d,
-        (
-          SELECT SUM(ds2.daily_duration_min)
-          FROM daily_stats ds2
-          WHERE ds2.day <= ds1.day
-            AND ds2.day >= DATE(ds1.day, '-9 days')
-        ) as duration_10d
+        ) as duration_7d
       FROM daily_stats ds1
     )
     SELECT 
       day as date,
       distance_7d,
-      duration_7d,
-      distance_10d,
-      duration_10d
+      duration_7d
     FROM rolling
     WHERE distance_7d IS NOT NULL
     ORDER BY day
@@ -125,22 +101,13 @@ export function getRolling7DayStats(startDate?: string): RollingStats[] {
 }
 
 // Get all activities with optional filters
-export function getActivities(filters?: { tags?: string[]; types?: string[]; startDate?: string }): Activity[] {
+export function getActivities(filters?: { tags?: string[]; types?: string[] }): Activity[] {
   let query = `
     SELECT 
       id, user_id, name, description, type, date, distance, moving_time,
       average_speed, average_power, average_heart_rate, average_cadence,
       ftp, tags, calories, total_elevation_gain
     FROM activities
-    WHERE 1=1
-  `;
-  
-  // Add date filter if provided
-  if (filters?.startDate) {
-    query += ` AND date >= '${filters.startDate}'`;
-  }
-  
-  query += `
     ORDER BY date DESC
   `;
   

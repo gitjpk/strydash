@@ -4,9 +4,6 @@ import 'leaflet/dist/leaflet.css'
 import Sidebar from '@/components/Sidebar'
 import ChatButton from '@/components/ChatButton'
 import { PreferencesProvider } from '@/components/PreferencesProvider'
-import { SidebarProvider } from '@/components/SidebarProvider'
-import DateFilterSync from '@/components/DateFilterSync'
-import MainContent from '@/components/MainContent'
 
 export const metadata: Metadata = {
   title: 'StryDash - Activity Dashboard',
@@ -22,12 +19,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-gray-900">
         <PreferencesProvider>
-          <SidebarProvider>
-            <DateFilterSync />
-            <Sidebar />
-            <MainContent>{children}</MainContent>
-            <ChatButton />
-          </SidebarProvider>
+          <Sidebar />
+          <main className="pt-16 lg:pt-0 lg:ml-64 transition-all duration-300">
+            {children}
+          </main>
+          <ChatButton />
         </PreferencesProvider>
       </body>
     </html>
