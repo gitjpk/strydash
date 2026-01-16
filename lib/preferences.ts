@@ -2,12 +2,15 @@ export type Language = 'en' | 'fr';
 export type Theme = 'light' | 'dark';
 export type MapProvider = 'leaflet' | 'maplibre';
 export type AIModel = 'mistral' | 'llama3.1' | 'phi3' | 'gemma2' | 'qwen2.5';
+export type AIInstanceType = 'local' | 'remote';
 
 export interface Preferences {
   language: Language;
   theme: Theme;
   mapProvider: MapProvider;
   aiModel: AIModel;
+  aiInstanceType: AIInstanceType;
+  aiRemoteUrl?: string;
 }
 
 export const defaultPreferences: Preferences = {
@@ -15,6 +18,8 @@ export const defaultPreferences: Preferences = {
   theme: 'light',
   mapProvider: 'leaflet',
   aiModel: 'mistral',
+  aiInstanceType: 'local',
+  aiRemoteUrl: undefined,
 };
 
 // Client-side only functions

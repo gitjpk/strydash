@@ -107,7 +107,7 @@ function formatDuration(seconds: number): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, model } = await request.json();
+    const { messages, model, remoteUrl } = await request.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -117,6 +117,11 @@ export async function POST(request: NextRequest) {
     }
 
     const ollamaModel = MODEL_MAP[model] || 'mistral:latest';
+    
+    // Determine the Ollama API URL (remote or local)
+    const apiUrl = remoteUrl 
+      ? `http://${remoteUrl}`  // Remote URL from preferences
+      : OLLAMA_API_URL;        // Default local URL
 
     // Add system context with training data
     const systemContext = getTrainingContext();
@@ -126,7 +131,7 @@ export async function POST(request: NextRequest) {
     ];
 
     // Call Ollama API
-    const response = await fetch(`${OLLAMA_API_URL}/api/chat`, {
+    const response = await fetch(`${apiUrl}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

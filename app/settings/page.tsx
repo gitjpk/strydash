@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings as SettingsIcon, Globe, Monitor, Map, Brain, Download, CheckCircle } from 'lucide-react';
-import { getPreferences, savePreferences, type Language, type Theme, type MapProvider, type AIModel } from '@/lib/preferences';
+import { Settings as SettingsIcon, Globe, Monitor, Map, Brain, Download, CheckCircle, Server } from 'lucide-react';
+import { getPreferences, savePreferences, type Language, type Theme, type MapProvider, type AIModel, type AIInstanceType } from '@/lib/preferences';
+import { usePreferences } from '@/components/PreferencesProvider';
 
 export default function SettingsPage() {
+  const { t } = usePreferences();
   const [language, setLanguage] = useState<Language>('en');
   const [theme, setTheme] = useState<Theme>('light');
   const [mapProvider, setMapProvider] = useState<MapProvider>('leaflet');
   const [aiModel, setAIModel] = useState<AIModel>('mistral');
+  const [aiInstanceType, setAIInstanceType] = useState<AIInstanceType>('local');
+  const [aiRemoteUrl, setAIRemoteUrl] = useState<string>('');
   const [downloadedModels, setDownloadedModels] = useState<Set<AIModel>>(new Set());
   const [downloadingModel, setDownloadingModel] = useState<AIModel | null>(null);
   const [saved, setSaved] = useState(false);
@@ -20,6 +24,8 @@ export default function SettingsPage() {
     setTheme(prefs.theme);
     setMapProvider(prefs.mapProvider || 'leaflet');
     setAIModel(prefs.aiModel || 'mistral');
+    setAIInstanceType(prefs.aiInstanceType || 'local');
+    setAIRemoteUrl(prefs.aiRemoteUrl || '');
     
     // Apply theme
     if (prefs.theme === 'dark') {
@@ -28,19 +34,20 @@ export default function SettingsPage() {
       document.documentElement.classList.remove('dark');
     }
 
-    // Check which models are actually available in Ollama
+    // Check which models are actually available in Ollama (only for local instance)
     const checkModels = async () => {
-      try {
-        const response = await fetch('/api/models');
-        const data = await response.json();
-        if (data.models) {
-          setDownloadedModels(new Set(data.models));
+      if (prefs.aiInstanceType === 'local' || !prefs.aiInstanceType) {
+        try {
+          const response = await fetch('/api/models');
+          const data = await response.json();
+          if (data.models) {
+            setDownloadedModels(new Set(data.models));
+          }
+        } catch (error) {
+          console.error('Error checking models:', error);
         }
-      } catch (error) {
-        console.error('Error checking models:', error);
-      } finally {
-        setCheckingModels(false);
       }
+      setCheckingModels(false);
     };
     
     checkModels();
@@ -48,7 +55,7 @@ export default function SettingsPage() {
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
-    savePreferences({ language: newLanguage, theme, mapProvider, aiModel });
+    savePreferences({ language: newLanguage, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
     // Reload to apply language changes
@@ -57,7 +64,7 @@ export default function SettingsPage() {
 
   const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);
-    savePreferences({ language, theme: newTheme, mapProvider, aiModel });
+    savePreferences({ language, theme: newTheme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
     
@@ -71,7 +78,21 @@ export default function SettingsPage() {
 
   const handleMapProviderChange = (newMapProvider: MapProvider) => {
     setMapProvider(newMapProvider);
-    savePreferences({ language, theme, mapProvider: newMapProvider, aiModel });
+    savePreferences({ language, theme, mapProvider: newMapProvider, aiModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleAIInstanceTypeChange = (newType: AIInstanceType) => {
+    setAIInstanceType(newType);
+    savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType: newType, aiRemoteUrl: aiRemoteUrl || undefined });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleRemoteUrlChange = (newUrl: string) => {
+    setAIRemoteUrl(newUrl);
+    savePreferences({ language, theme, mapProvider, aiModel, aiInstanceType, aiRemoteUrl: newUrl || undefined });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -114,7 +135,7 @@ export default function SettingsPage() {
     }
     
     setAIModel(newAIModel);
-    savePreferences({ language, theme, mapProvider, aiModel: newAIModel });
+    savePreferences({ language, theme, mapProvider, aiModel: newAIModel, aiInstanceType, aiRemoteUrl: aiRemoteUrl || undefined });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -134,7 +155,7 @@ export default function SettingsPage() {
         {/* Success message */}
         {saved && (
           <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-300 text-sm">
-            ✓ Settings saved successfully!
+            ✓ {t('settings.saveSettings')}
           </div>
         )}
 
@@ -235,16 +256,45 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* AI Model */}
+          {/* AI Settings */}
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Brain className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               <div>
-                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 block">AI Model (StrAId)</label>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Choose which language model to use for the assistant</p>
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 block">{t('settings.aiSettings')}</label>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('settings.aiSettingsDesc')}</p>
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+
+            {/* Instance Type Selection */}
+            <div className="mb-4">
+              <div className="flex gap-3 mb-4">
+                <button
+                  onClick={() => handleAIInstanceTypeChange('local')}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all ${
+                    aiInstanceType === 'local'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium'
+                      : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
+                  }`}
+                >
+                  🖥️ {t('settings.localInstance')}
+                </button>
+                <button
+                  onClick={() => handleAIInstanceTypeChange('remote')}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all ${
+                    aiInstanceType === 'remote'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium'
+                      : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
+                  }`}
+                >
+                  🌐 {t('settings.remoteInstance')}
+                </button>
+              </div>
+            </div>
+
+            {/* Local Instance - Model Selection */}
+            {aiInstanceType === 'local' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <button
                 onClick={() => handleAIModelChange('mistral')}
                 disabled={downloadingModel === 'mistral'}
@@ -361,6 +411,31 @@ export default function SettingsPage() {
                 </div>
               </button>
             </div>
+            )}
+
+            {/* Remote Instance - URL Input */}
+            {aiInstanceType === 'remote' && (
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
+                    {t('settings.remoteServerUrl')}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Server className="w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={aiRemoteUrl}
+                      onChange={(e) => handleRemoteUrlChange(e.target.value)}
+                      placeholder={t('settings.remoteUrlPlaceholder')}
+                      className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:border-blue-500 focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    {t('settings.remoteUrlDesc')}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -26,6 +26,10 @@ export default function StrAIdPage() {
     const model = prefs.aiModel || 'mistral';
     setCurrentModel(model);
     console.log(`StrAId using model: ${model}`);
+    console.log(`StrAId instance type: ${prefs.aiInstanceType || 'local'}`);
+    if (prefs.aiRemoteUrl) {
+      console.log(`StrAId remote URL: ${prefs.aiRemoteUrl}`);
+    }
     setModelLoaded(true);
   }, []);
 
@@ -47,6 +51,9 @@ export default function StrAIdPage() {
     setIsLoading(true);
 
     try {
+      // Get preferences to check for remote URL
+      const prefs = getPreferences();
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -58,6 +65,7 @@ export default function StrAIdPage() {
             content: m.content,
           })),
           model: currentModel,
+          remoteUrl: prefs.aiInstanceType === 'remote' ? prefs.aiRemoteUrl : undefined,
         }),
       });
 

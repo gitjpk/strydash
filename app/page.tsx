@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ tags?: string | string[]; types?: string | string[]; startDate?: string }>
+  searchParams: Promise<{ tags?: string | string[]; types?: string | string[] }>
 }) {
   // Parse filters from URL
   const params = await searchParams;
@@ -19,12 +19,10 @@ export default async function Home({
   const selectedTypes = params.types
     ? (Array.isArray(params.types) ? params.types : [params.types])
     : [];
-  const startDate = params.startDate;
 
   const activities = getActivities({
     tags: selectedTags.length > 0 ? selectedTags : undefined,
     types: selectedTypes.length > 0 ? selectedTypes : undefined,
-    startDate,
   });
   const allTags = getAllTags();
   const allTypes = getAllTypes();

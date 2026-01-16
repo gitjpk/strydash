@@ -3,15 +3,8 @@ import CalendarClient from '@/components/CalendarClient';
 
 export const dynamic = 'force-dynamic';
 
-export default async function CalendarPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ startDate?: string }>
-}) {
-  const params = await searchParams;
-  const startDate = params.startDate;
-
-  const activities = getActivities({ startDate });
+export default function CalendarPage() {
+  const activities = getActivities();
 
   return <CalendarClient activities={activities} />;
 }

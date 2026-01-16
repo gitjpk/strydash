@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { type Activity, type TimeseriesDataPoint, type Lap, type GPSPoint } from '@/lib/db';
+import { type Activity, type TimeseriesData, type Lap, type GPSPoint } from '@/lib/db';
 import { ArrowLeft, Calendar, Activity as ActivityIcon, Zap, Heart, TrendingUp, Gauge, Clock, ExternalLink } from 'lucide-react';
 import TimeseriesChart from '@/components/TimeseriesChart';
 import RouteMap from '@/components/RouteMap';
@@ -10,7 +10,7 @@ import { usePreferences } from './PreferencesProvider';
 
 interface ActivityDetailClientProps {
   activity: Activity;
-  timeseriesData: TimeseriesDataPoint[];
+  timeseriesData: TimeseriesData[];
   laps: Lap[];
   gpsPoints: GPSPoint[];
 }
