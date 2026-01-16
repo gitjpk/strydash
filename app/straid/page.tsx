@@ -23,25 +23,62 @@ export default function StrAIdPage() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Load the selected model from preferences
-    const prefs = getPreferences();
-    const model = prefs.aiModel || 'mistral';
-    const isRemote = prefs.aiInstanceType === 'remote';
-    setCurrentModel(model);
-    setIsRemoteInstance(isRemote);
+    const loadModelInfo = async () => {
+      // Load the selected model from preferences
+      const prefs = getPreferences();
+      const model = prefs.aiModel || 'mistral';
+      const isRemote = prefs.aiInstanceType === 'remote';
+      setCurrentModel(model);
+      setIsRemoteInstance(isRemote);
+      
+      // If remote instance, try to detect the model
+      if (isRemote && prefs.aiRemoteUrl && prefs.remoteServerType) {
+        try {
+          const response = await fetch('/api/remote-model', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              remoteUrl: prefs.aiRemoteUrl, 
+              remoteServerType: prefs.remoteServerType 
+            }),
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.modelName) {
+              setRemoteModelName(data.modelName);
+              console.log(`StrAId using remote model: ${data.modelName}`);
+              
+              // Update preferences with the detected model name
+              const { savePreferences } = await import('@/lib/preferences');
+              savePreferences({ ...prefs, remoteModelName: data.modelName });
+            }
+          }
+        } catch (error) {
+          console.error('Error detecting remote model:', error);
+          // Fall back to stored model name if detection fails
+          if (prefs.remoteModelName) {
+            setRemoteModelName(prefs.remoteModelName);
+          }
+        }
+      } else if (isRemote && prefs.remoteModelName) {
+        // Use stored model name if available
+        setRemoteModelName(prefs.remoteModelName);
+        console.log(`StrAId using remote model: ${prefs.remoteModelName}`);
+      } else {
+        console.log(`StrAId using model: ${model}`);
+      }
+      
+      console.log(`StrAId instance type: ${prefs.aiInstanceType || 'local'}`);
+      if (prefs.aiRemoteUrl) {
+        console.log(`StrAId remote URL: ${prefs.aiRemoteUrl}`);
+      }
+      setModelLoaded(true);
+    };
     
-    if (isRemote && prefs.remoteModelName) {
-      setRemoteModelName(prefs.remoteModelName);
-      console.log(`StrAId using remote model: ${prefs.remoteModelName}`);
-    } else {
-      console.log(`StrAId using model: ${model}`);
-    }
-    
-    console.log(`StrAId instance type: ${prefs.aiInstanceType || 'local'}`);
-    if (prefs.aiRemoteUrl) {
-      console.log(`StrAId remote URL: ${prefs.aiRemoteUrl}`);
-    }
-    setModelLoaded(true);
+    loadModelInfo();
   }, []);
 
   const scrollToBottom = () => {
